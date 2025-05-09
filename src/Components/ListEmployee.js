@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom'
 const ListEmployee = () => {
         
 
-const [employees,setEmployees]=useState([])
+const [employees, setEmployees] = useState([]);
+
 const navigator=useNavigate();
 
 useEffect(
@@ -23,7 +24,10 @@ function addNewEmployee()
     
     
 }
-    
+function updateEmployee(id)
+{
+    navigator(`/update-employee/${id}`)
+}    
     
   return (
     <div className="container">
@@ -36,17 +40,23 @@ function addNewEmployee()
                     <th>Employee FirstName</th>
                     <th>Employee LastName</th>
                     <th>Employee Email</th>
+                    <th>Action</th>
+
                 </tr>
             </thead>
             <tbody>
                 {
                     employees.map(employee =>
-                        <tr keys={employee.id}>
+                        <tr key={employee.id}>
                             <td>{employee.id}</td>
                             <td>{employee.firstName}</td>
                             <td>{employee.lastName}</td>
                             <td>{employee.email}</td>
+                            <td>
+                                <button className='btn btn-info'onClick={()=>updateEmployee(employee.id)}>update</button>
+                            </td>
 
+          
                         </tr>
                     )
                 }
@@ -56,4 +66,5 @@ function addNewEmployee()
   )
 }
 
-export default ListEmployee
+
+export default ListEmployee 
