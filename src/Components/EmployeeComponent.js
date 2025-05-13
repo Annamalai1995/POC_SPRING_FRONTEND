@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { createEmployee } from '../Services/EmployeeService'
+import React, { useEffect, useState } from 'react'
+import { createEmployee, getEmployee, updateEmployee } from '../Services/EmployeeService'
 import { useNavigate,useParams } from 'react-router-dom'
 
 const EmployeeComponent = () => {
@@ -19,17 +19,47 @@ const [errors,setErrors]=useState(
 
 
 const navigator=useNavigate();
-function saveEmployee(e){
+useEffect(()=>{
+    if(id)
+    {
+        getEmployee(id).then((response)=>{
+            setFirstName(response.data.firstName);
+            setLastName(response.data.lastName);
+            setEmail(response.data.email);
+        }).catch(error => {
+            console.error(error);
+        })
+    }
+    
+},[id])
+
+function saveOrUpdateEmployee(e){
     e.preventDefault();
     if (validateForm())
     {
         const employee={firstName,lastName,email}
         console.log(employee);
+        if(id)
+        {
+            updateEmployee(id,employee).then((reponse)=>{
+                console.log(reponse.data);
+                navigator('/employees')
+            }).catch(error => {
+                console.error(error);
+            });
+        }else{
+            createEmployee(employee).then((response)=>{
+                console.log(response.data);
+                navigator('/employees')
+            }).catch(error => {
+                console.error(error);
+            })
+
+        }
+
+        
     
-        createEmployee(employee).then((response)=>{
-            console.log(response.data);
-            navigator('/employees')
-        })
+        
        
         
     }
@@ -94,7 +124,7 @@ function pageTitle(){
                         <form>
                             <div className='form-group mb-2'>
                                 <label className='form-label'>First Name</label>
-                                <input 
+                                 <input 
                                 type='text' 
                                 placeholder='Enter Employe FirstName'
                                 name='firstName'
@@ -132,7 +162,7 @@ function pageTitle(){
                                 </input>
                                 {errors.email && <div className='invalid-feedback'>{errors.email}</div>}
                             </div>
-<button className='btn btn-success' onClick={saveEmployee}>Submit</button>                            
+<button className='btn btn-success' onClick={saveOrUpdateEmployee}>Submit</button>                            
                         </form>
                     </div>
 
